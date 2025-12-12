@@ -1,0 +1,87 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+ENV/
+env/
+.venv
+
+# PyTorch
+*.pth
+*.pt
+*.ckpt
+
+# Logs
+*.log
+logs/
+server.log
+server_https.log
+
+# Environment variables
+.env
+config.env
+
+# SSL Certificates (don't commit private keys)
+ssl/*.key
+certs/*.key
+*.pem
+
+# Model cache
+models/
+.cache/
+huggingface/
+
+# Encrypted models
+heaan_encrypted/encrypted_models/
+*.encrypted
+
+# Keys
+heaan_encrypted/keys/*.pem
+*.key
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Test files
+test_output/
+temp/
+
+# Excel
+*.xlsx
+~$*.xlsx
+
+# Backup files
+*.bak
+*.backup

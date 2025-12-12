@@ -1,0 +1,35 @@
+[Unit]
+Description=HE-with-LLM Medical AI Server
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/mnt/development/ubuntu/nytuncer/he-with-llm
+Environment="PATH=/usr/local/cuda/bin:/usr/bin:/bin"
+Environment="LD_LIBRARY_PATH=/usr/local/cuda/lib64"
+Environment="CUDA_VISIBLE_DEVICES=0"
+
+# Start command (choose one):
+# Option 1: HTTP only
+#ExecStart=/usr/bin/python3 /mnt/development/ubuntu/nytuncer/he-with-llm/heaan_encrypted/server/hybrid_gpu_server.py
+
+# Option 2: HTTPS enabled
+ExecStart=/usr/bin/python3 /mnt/development/ubuntu/nytuncer/he-with-llm/heaan_encrypted/server/https_server.py
+
+# Restart policy
+Restart=always
+RestartSec=10
+StartLimitInterval=200
+StartLimitBurst=5
+
+# Logging
+StandardOutput=append:/var/log/he-with-llm/server.log
+StandardError=append:/var/log/he-with-llm/error.log
+
+# Resource limits
+LimitNOFILE=65536
+TimeoutStopSec=30
+
+[Install]
+WantedBy=multi-user.target
