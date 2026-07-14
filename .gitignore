@@ -85,3 +85,7 @@ temp/
 # Backup files
 *.bak
 *.backup
+
+# Runtime / process artifacts
+*.pid
+.server.pid
