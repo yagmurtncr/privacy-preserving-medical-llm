@@ -74,12 +74,27 @@ curl -k -X POST "https://localhost:9200/generate" \
 
 ## 🏗️ Architecture
 
-```
-User (Doctor) → HTTPS/TLS → Security Gateway → PII Masking
-    ↓
-Llama 3.1 8B (GPU, Layer-wise Encrypted)
-    ↓
-PII Detection → Audit Logging → HTTPS Response
+```mermaid
+flowchart TD
+    U["👨‍⚕️ Doctor / Client"] -->|"HTTPS · TLS (RSA-4096)"| GW
+
+    subgraph GW["Security Gateway (10 layers)"]
+        direction TB
+        L1["IP whitelist · Rate limiting"]
+        L2["JWT auth · Account lockout · Password policy"]
+        L3["Input validation (XSS / SQLi)"]
+        L4["Security headers (CSP, X-Frame)"]
+        L1 --> L2 --> L3 --> L4
+    end
+
+    GW --> PIIin["PII masking<br/>(names, TC ID, phone, email)"]
+    PIIin --> LLM["🧠 Llama 3.1 8B (GPU)<br/>Layer-wise AES-256 encrypted"]
+    LLM --> PIIout["PII detection on output"]
+    PIIout --> Audit["Audit logging (GDPR / KVKK)"]
+    Audit -->|"HTTPS response"| U
+
+    classDef sec fill:#0f766e,stroke:#134e4a,color:#fff;
+    class L1,L2,L3,L4 sec;
 ```
 
 **Full architecture:** [SIMPLE_ARCHITECTURE.md](SIMPLE_ARCHITECTURE.md)
