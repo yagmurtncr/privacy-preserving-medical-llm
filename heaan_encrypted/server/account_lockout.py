@@ -45,7 +45,7 @@ class AccountLockout:
         Returns:
             (is_locked, message)
         """
-        _now = datetime.now()
+        now = datetime.now()
         
         # Kullanıcı bazlı takip
         self.failed_attempts[username].append(now)
@@ -145,7 +145,7 @@ class AccountLockout:
         Returns:
             dict: İstatistikler
         """
-        now = datetime.now()
+        _now = datetime.now()
         
         return {
             "locked_accounts": len(self.locked_accounts),
