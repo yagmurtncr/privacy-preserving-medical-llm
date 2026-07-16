@@ -5,9 +5,9 @@ Environment-based configuration loader
 """
 
 import os
+import secrets
 from pathlib import Path
 from typing import Optional
-import secrets
 
 # Base directory
 BASE_DIR = Path(__file__).parent.parent
@@ -146,11 +146,11 @@ class Config:
         # Validation
         errors = cls.validate()
         if errors:
-            print(f"\n⚠️  CONFIGURATION ERRORS:")
+            print("\n⚠️  CONFIGURATION ERRORS:")
             for error in errors:
                 print(f"   ❌ {error}")
         else:
-            print(f"\n✅ Configuration valid!")
+            print("\n✅ Configuration valid!")
         
         print("="*70 + "\n")
 

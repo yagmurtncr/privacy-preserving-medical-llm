@@ -7,10 +7,11 @@ PERFORMANS: INT8 quantization, GPU inference, ~12s gecikme
 PRİVACY: Stateless API, veri saklamama, GDPR uyumlu
 """
 
-import torch
-from transformers import AutoTokenizer, AutoModelForCausalLM
-from typing import Optional, Dict, Any
 import time
+from typing import Any, Dict, Optional
+
+import torch
+from transformers import AutoModelForCausalLM, AutoTokenizer
 
 
 class LlamaTextGenerator:
@@ -75,12 +76,12 @@ class LlamaTextGenerator:
             print(f"✅ Llama loaded in {elapsed:.1f}s")
             print(f"   Device: {self.device}")
             print(f"   Model: {model_name}")
-            print(f"   Parameters: ~8B")
+            print("   Parameters: ~8B")
             
         except Exception as e:
             print(f"❌ FATAL: Failed to load Llama: {e}")
-            print(f"   Mock template DISABLED for production integrity!")
-            print(f"   System requires real Llama 3.1 8B to run.")
+            print("   Mock template DISABLED for production integrity!")
+            print("   System requires real Llama 3.1 8B to run.")
             raise RuntimeError(f"Llama 3.1 8B failed to load: {e}")
     
     # #2 Güvenlik kontrolü: Model'in inference-only modda olduğunu doğrular (frozen weights)
@@ -95,8 +96,8 @@ class LlamaTextGenerator:
             )
         
         print(f"   🔒 Security: ALL {total_params} parameters frozen (inference-only)")
-        print(f"   ✅ Model CANNOT learn from data")
-        print(f"   ✅ Zero gradient computation")
+        print("   ✅ Model CANNOT learn from data")
+        print("   ✅ Zero gradient computation")
     
     # #3 Text generation (ana fonksiyon): Prompt alır, Llama ile response üretir
     def generate(self,

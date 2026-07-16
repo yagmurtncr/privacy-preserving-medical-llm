@@ -51,10 +51,10 @@ Fully-HE (Gelecek):
 Trade-off kararı: Speed vs Ultimate Privacy
 """
 
-import tenseal as ts
-import numpy as np
 import time
 
+import numpy as np
+import tenseal as ts
 
 # ============================================================
 # BASIC OPERATIONS
@@ -312,7 +312,7 @@ def test_encrypted_operations():
     
     # Test data
     vec_a = [1.0, 2.0, 3.0, 4.0]
-    vec_b = [0.5, 0.5, 0.5, 0.5]
+    _vec_b = [0.5, 0.5, 0.5, 0.5]
     matrix = [
         [1.0, 0.0],
         [0.0, 1.0],
@@ -363,7 +363,7 @@ def test_encrypted_operations():
     print("\n" + "="*70)
     print("✅ All tests passed!")
     print("="*70)
-    print(f"\nPerformance summary:")
+    print("\nPerformance summary:")
     print(f"  Scalar multiply: {time1:.3f}s")
     print(f"  Matrix multiply: {time2:.3f}s")
     print(f"  GELU activation: {time3:.3f}s")

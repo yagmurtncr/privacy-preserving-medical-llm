@@ -6,12 +6,14 @@ LlamaTextGenerator'ın in-memory encrypted versiyonu
 Model RAM'de AES-256-GCM ile şifreli, sadece inference sırasında decrypt edilir.
 """
 
-import torch
-from transformers import AutoTokenizer, AutoModelForCausalLM
-from typing import Optional, Dict, Any
-import time
-import os
 import gc
+import os
+import time
+from typing import Any, Dict, Optional
+
+import torch
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
 from heaan_encrypted.server.layerwise_encrypted_model import LayerwiseEncryptedModelWrapper
 
 
@@ -63,11 +65,11 @@ class EncryptedLlamaTextGenerator:
             # Model yükle
             if enable_encryption:
                 # ===== ENCRYPTED MODE =====
-                print(f"\n🔐 Loading model in ENCRYPTED mode...")
+                print("\n🔐 Loading model in ENCRYPTED mode...")
                 
                 # Check if pre-encrypted model exists on disk
-                from pathlib import Path
                 import os
+                from pathlib import Path
                 # Use absolute path based on project root
                 project_root = Path(__file__).parent.parent.parent
                 encrypted_model_path = project_root / "encrypted_models" / f"{model_name.replace('/', '_')}_encrypted.enc"
@@ -77,10 +79,10 @@ class EncryptedLlamaTextGenerator:
                 
                 if encrypted_model_path.exists():
                     # ===== LOAD FROM DISK (FAST!) =====
-                    print(f"   📂 Found pre-encrypted model on disk!")
+                    print("   📂 Found pre-encrypted model on disk!")
                     print(f"   Loading from: {encrypted_model_path}")
                     
-                    self.encrypted_wrapper = EncryptedModelWrapper.load_encrypted_model(
+                    self.encrypted_wrapper = LayerwiseEncryptedModelWrapper.load_encrypted_model(
                         str(encrypted_model_path),
                         self.tokenizer
                     )
@@ -113,7 +115,7 @@ class EncryptedLlamaTextGenerator:
                         )
                         model = model.to(device)
                     
-                    print(f"   ✅ FP16 model loaded (~16 GB)")
+                    print("   ✅ FP16 model loaded (~16 GB)")
                     
                     model.eval()
                     
@@ -137,7 +139,7 @@ class EncryptedLlamaTextGenerator:
                 
             else:
                 # ===== NORMAL MODE (no encryption) =====
-                print(f"\n⚠️  Loading model in NORMAL mode (no encryption)...")
+                print("\n⚠️  Loading model in NORMAL mode (no encryption)...")
                 
                 if device == "cuda":
                     self.model = AutoModelForCausalLM.from_pretrained(

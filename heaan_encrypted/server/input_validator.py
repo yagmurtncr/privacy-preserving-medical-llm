@@ -3,10 +3,11 @@ Input Validator Module
 XSS, SQL injection, code injection, buffer overflow koruması (pre-compiled regex)
 """
 
-from fastapi import HTTPException
 import re
 import unicodedata
 from typing import List, Tuple
+
+from fastapi import HTTPException
 
 # =============================================================================
 # INPUT VALIDATOR CLASS

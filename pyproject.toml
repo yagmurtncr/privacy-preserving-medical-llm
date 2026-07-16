@@ -1,0 +1,24 @@
+[project]
+name = "privacy-preserving-medical-llm"
+version = "1.0.0"
+description = "Privacy-preserving medical LLM: layer-wise encryption, PII protection, 10 security layers."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Nur Yağmur Tuncer" }]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+extend-exclude = ["heaan_encrypted/keys", "certs"]
+
+[tool.ruff.lint]
+# Security modules are the tested core; keep lint scoped to avoid noise from
+# research/experiment scripts. Broaden over time.
+select = ["F", "I"]
+ignore = ["F401", "E402"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+pythonpath = ["heaan_encrypted/server"]

@@ -3,9 +3,10 @@ Differential Privacy Module
 LLM response'lara calibrated noise ekler (membership inference resistance, ε-DP)
 """
 
-import numpy as np
-from typing import Optional
 import hashlib
+from typing import Optional
+
+import numpy as np
 
 # =============================================================================
 # DIFFERENTIAL PRIVACY CLASS

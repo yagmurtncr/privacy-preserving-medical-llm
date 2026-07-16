@@ -4,6 +4,7 @@
 
 **Llama 3.1 8B + NVIDIA GPU + Layer-wise Encryption + HTTPS + PII Protection**
 
+[![CI](https://github.com/yagmurtncr/privacy-preserving-medical-llm/actions/workflows/ci.yml/badge.svg)](https://github.com/yagmurtncr/privacy-preserving-medical-llm/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/Python-3.12+-blue.svg)](https://www.python.org/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.x-red.svg)](https://pytorch.org/)
 [![CUDA](https://img.shields.io/badge/CUDA-12.x-green.svg)](https://developer.nvidia.com/cuda-toolkit)

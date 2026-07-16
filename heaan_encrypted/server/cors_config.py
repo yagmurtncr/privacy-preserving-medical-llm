@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """CORS Configuration"""
-from fastapi.middleware.cors import CORSMiddleware
 import os
+
+from fastapi.middleware.cors import CORSMiddleware
+
 
 def add_cors_middleware(app, strict=False):
     """

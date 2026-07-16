@@ -16,13 +16,13 @@ Usage:
 """
 
 import re
-from typing import Dict, List, Tuple, Optional, Any
 from dataclasses import dataclass
+from typing import Any, Dict, List, Optional, Tuple
 
 # Optional NER model imports
 try:
-    from transformers import AutoTokenizer, AutoModelForTokenClassification
     import torch
+    from transformers import AutoModelForTokenClassification, AutoTokenizer
     NER_AVAILABLE = True
 except ImportError:
     NER_AVAILABLE = False

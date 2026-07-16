@@ -32,10 +32,11 @@ VERİ SIZMA RİSKİ:
 • Encryption + PII masking = Double protection
 """
 
-import tenseal as ts
 import pickle
 from pathlib import Path
 from typing import Optional
+
+import tenseal as ts
 
 # ============================================================
 # ENCRYPTION PARAMETERS
@@ -53,7 +54,7 @@ SECURITY_LEVEL = 128        # Bit cinsinden güvenlik seviyesi (industry standar
 def create_context() -> ts.Context:
     """BFV encryption context oluşturur (exact integer, UTF-8 için mükemmel)."""
     print("🔧 BFV Encryption Context Oluşturuluyor...")
-    print(f"   Scheme: BFV (Exact Integer)")
+    print("   Scheme: BFV (Exact Integer)")
     print(f"   Poly Modulus: {POLY_MODULUS_DEGREE}")
     print(f"   Security: {SECURITY_LEVEL}-bit")
     

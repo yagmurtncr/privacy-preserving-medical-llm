@@ -3,9 +3,9 @@ Secure Memory Module
 RAM ve GPU'dan hassas verileri güvenli şekilde temizler (string zeroing, tensor cleanup, GC)
 """
 
+import ctypes
 import gc
 from typing import Any
-import ctypes
 
 # PyTorch optional (GPU cleanup için)
 try:

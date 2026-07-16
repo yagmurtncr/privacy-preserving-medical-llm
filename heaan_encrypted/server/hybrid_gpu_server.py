@@ -4,27 +4,29 @@
 Gizlilik Korumalı LLM Sunucusu - Llama 3.1 8B + GPU ile PII masking, differential privacy, güvenli bellek yönetimi
 """
 
-import torch
-import torch.nn as nn
-from fastapi import FastAPI, HTTPException, Depends, Request
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from pydantic import BaseModel
-import sys
 import os
+import sys
 from pathlib import Path
 from typing import Optional
+
+import torch
+import torch.nn as nn
 from dotenv import load_dotenv
+from fastapi import Depends, FastAPI, HTTPException, Request
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from pydantic import BaseModel
 
 # ✅ .env dosyasını yükle (JWT_SECRET_KEY ve diğer config'ler için)
 load_dotenv()
 import asyncio
-from collections import deque
+import secrets
 import time
 import traceback
-import jwt
-import secrets
-import bcrypt
+from collections import deque
 from datetime import datetime, timedelta, timezone
+
+import bcrypt
+import jwt
 
 # Proje root ve heaan_encrypted path'lerini ekle
 project_root = Path(__file__).parent.parent.parent
@@ -58,29 +60,29 @@ except Exception as e:
 # Güvenlik modülleri: Auth, rate limiting, input doğrulama, DP, secure memory
 
 # Her zaman aktif gizlilik modülleri (KRİTİK)
-from heaan_encrypted.server.secure_memory import secure_memory, SecureScope
-from heaan_encrypted.server.differential_privacy import DifferentialPrivacy
 from heaan_encrypted.server.audit_logger import audit_logger
-from heaan_encrypted.server.encrypted_llama_generator import EncryptedLlamaTextGenerator
+from heaan_encrypted.server.differential_privacy import DifferentialPrivacy
 from heaan_encrypted.server.e2e_encryption import E2EEncryptionManager
+from heaan_encrypted.server.encrypted_llama_generator import EncryptedLlamaTextGenerator
+from heaan_encrypted.server.secure_memory import SecureScope, secure_memory
 
 # Opsiyonel güvenlik modülleri (auth, rate limiting, vb.)
 try:
+    from heaan_encrypted.server.account_lockout import account_lockout
     from heaan_encrypted.server.auth import (
-        verify_token, 
-        get_hospital_id, 
+        AUTHORIZED_HOSPITALS,
         create_access_token,
-        AUTHORIZED_HOSPITALS
+        get_hospital_id,
+        verify_token,
     )
-    from heaan_encrypted.server.rate_limiter import RateLimitMiddleware
-    from heaan_encrypted.server.input_validator import InputValidator
-    from heaan_encrypted.server.security_logger import security_logger
-    from heaan_encrypted.server.ip_whitelist import add_ip_whitelist
-    from heaan_encrypted.server.security_headers import add_security_headers
     from heaan_encrypted.server.cors_config import add_cors_middleware
     from heaan_encrypted.server.https_redirect import add_https_redirect
-    from heaan_encrypted.server.account_lockout import account_lockout
+    from heaan_encrypted.server.input_validator import InputValidator
+    from heaan_encrypted.server.ip_whitelist import add_ip_whitelist
     from heaan_encrypted.server.password_policy import PasswordPolicy
+    from heaan_encrypted.server.rate_limiter import RateLimitMiddleware
+    from heaan_encrypted.server.security_headers import add_security_headers
+    from heaan_encrypted.server.security_logger import security_logger
     
     SECURITY_ENABLED = True
     print("✅ Security modules loaded successfully!")
@@ -318,7 +320,7 @@ def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
         return {"username": username, "role": payload.get("role")}
     except jwt.ExpiredSignatureError:
         raise HTTPException(status_code=401, detail="Token expired")
-    except Exception as e:
+    except Exception:
         # Catch all JWT-related errors (InvalidSignatureError, DecodeError, etc.)
         raise HTTPException(status_code=401, detail="Invalid token")
 
@@ -508,7 +510,7 @@ async def startup():
             PII_MASKER = None
     except Exception as e:
         print(f"   ⚠️  Could not load PII masker: {e}")
-        print(f"   ℹ️  Falling back to hybrid mode")
+        print("   ℹ️  Falling back to hybrid mode")
         try:
             PII_MASKER = PIIMasker(aggressive=True, language='tr', mode='hybrid', ner_gpu_id=3)
         except:
@@ -730,7 +732,7 @@ async def login(request: LoginRequest, http_request: Request = None):
 async def _optional_get_stats(hospital_id: str = Depends(get_hospital_id) if SECURITY_ENABLED else None):
     """📊 OPTIONAL: GPU/CPU, memory, güvenlik ve rate limit istatistikleri"""
     if not SECURITY_ENABLED:
-        hospital_id = "development"
+        _hospital_id = "development"
     
     # Check if in-memory encryption is enabled
     encryption_enabled = os.getenv("ENABLE_IN_MEMORY_ENCRYPTION", "false").lower() == "true"
@@ -1290,8 +1292,9 @@ async def _deprecated_get_public_key():
 # Server başlatma (ana program)
 
 if __name__ == "__main__":
-    import uvicorn
     from pathlib import Path
+
+    import uvicorn
     
     print("""
 ╔══════════════════════════════════════════════════════════════════════╗

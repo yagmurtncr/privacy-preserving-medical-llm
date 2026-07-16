@@ -13,18 +13,19 @@ Performance:
   - Memory: 8 GB INT8 + 0.5 GB active = 8.5 GB
 """
 
-import torch
 import gc
-import os
-import time
-import psutil
-from typing import Optional, Dict, Any, List
-from cryptography.hazmat.primitives.ciphers.aead import AESGCM
-from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC as PBKDF2
-from cryptography.hazmat.primitives import hashes
-import pickle
 import hashlib
+import os
+import pickle
+import time
+from typing import Any, Dict, List, Optional
+
+import psutil
+import torch
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC as PBKDF2
 
 
 class LayerwiseEncryptedModelWrapper:
@@ -44,7 +45,7 @@ class LayerwiseEncryptedModelWrapper:
         """
         
         print(f"\n{'='*80}")
-        print(f"🔐 Initializing Layer-by-Layer Encrypted Model...")
+        print("🔐 Initializing Layer-by-Layer Encrypted Model...")
         print(f"{'='*80}")
         
         self.tokenizer = tokenizer
@@ -87,7 +88,7 @@ class LayerwiseEncryptedModelWrapper:
         self.total_decrypt_time = 0.0
         self.total_inference_time = 0.0
         
-        print(f"\n✅ Model encrypted layer-by-layer in RAM!")
+        print("\n✅ Model encrypted layer-by-layer in RAM!")
         self._print_memory()
     
     def _encrypt_layers(self, model) -> List[bytes]:
@@ -97,7 +98,7 @@ class LayerwiseEncryptedModelWrapper:
         Returns:
             List of encrypted layer bytes
         """
-        print(f"\n📦 Encrypting model layers...")
+        print("\n📦 Encrypting model layers...")
         
         # Get layers (Llama architecture)
         layers = model.model.layers  # LlamaDecoderLayer objects
@@ -136,7 +137,7 @@ class LayerwiseEncryptedModelWrapper:
         Returns:
             List of encrypted chunks
         """
-        print(f"\n📦 Encrypting other components (embeddings, norm, lm_head)...")
+        print("\n📦 Encrypting other components (embeddings, norm, lm_head)...")
         
         other_components = {
             'embed_tokens': model.model.embed_tokens.state_dict(),
@@ -234,7 +235,7 @@ class LayerwiseEncryptedModelWrapper:
             input_ids = inputs["input_ids"].to(self.device)
             
             # ===== STEP 3: LAYER-BY-LAYER FORWARD PASS =====
-            print(f"   [3/4] Layer-by-layer forward pass (32 layers)...")
+            print("   [3/4] Layer-by-layer forward pass (32 layers)...")
             inference_start = time.time()
             
             # Create model skeleton
@@ -252,7 +253,7 @@ class LayerwiseEncryptedModelWrapper:
             gc.collect()
             
             # NOW: Decrypt and load layers ONE BY ONE
-            print(f"      Decrypting layers on-demand...")
+            print("      Decrypting layers on-demand...")
             
             for i, encrypted_layer in enumerate(self.encrypted_layers):
                 layer_start = time.time()
@@ -274,7 +275,7 @@ class LayerwiseEncryptedModelWrapper:
                 if (i + 1) % 8 == 0:  # Print every 8 layers
                     print(f"      Layers {i+1}/32 loaded ({layer_time:.2f}s)")
             
-            print(f"      ✅ All layers decrypted & loaded")
+            print("      ✅ All layers decrypted & loaded")
             
             # Generate
             with torch.no_grad():

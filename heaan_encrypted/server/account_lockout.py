@@ -5,8 +5,8 @@ Account Lockout Module - Brute Force Protection
 5 yanlış denemeden sonra hesap kilitleme
 """
 
-from datetime import datetime, timedelta
 from collections import defaultdict
+from datetime import datetime, timedelta
 from typing import Tuple
 
 
@@ -45,7 +45,7 @@ class AccountLockout:
         Returns:
             (is_locked, message)
         """
-        now = datetime.now()
+        _now = datetime.now()
         
         # Kullanıcı bazlı takip
         self.failed_attempts[username].append(now)
