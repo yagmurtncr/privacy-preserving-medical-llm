@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> **Archived.** This prototype has been consolidated into **[secure-clinical-llm](https://github.com/yagmurtncr/secure-clinical-llm)**, which combines it with the other two privacy prototypes and adds exactness tests, measured overhead, a PII benchmark, a hidden-state leakage study and an explicit threat model. This repository is kept read-only for reference.
+
 # 🏥 Privacy-Preserving Medical LLM System
 
 <div align="center">
